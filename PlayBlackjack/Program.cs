@@ -9,13 +9,31 @@ namespace PlayBlackjack
 
     class Program
     {
+        // Functions for hitting and printing. Might consolidate, might need to remake
+        // with new understanding of pre-written code.
+        public static List<int> HitMe(List<int> hitHand, List<string> randomDeck)
+        {
+            int newCard = 0;
+            randomDeck.ToString();
+            int.TryParse(randomDeck.First(), out newCard);
+            hitHand.Add(newCard);
+            return hitHand;
+        }
+
+        public static int PrintTotal(List<int> hand)
+        {
+            Console.WriteLine(hand.Sum());
+            return hand.Sum();
+        }
+        //
+
         public enum Suit
         {
             Hearts,
             Clubs,
             Diamonds,
             Spades
-        } // All suit values. There are 4.
+        } // All suits. There are 4.
 
         public enum Rank
         {
@@ -32,23 +50,34 @@ namespace PlayBlackjack
             Jack,
             Queen,
             King
-        } // All rank values. There are 11.
+        } // All ranks. There are 13.
 
         public class Card
         {
-            public Suit Suit { get; set; }
-            public Rank Rank { get; set; }
-
+            // allows for suit and rank to have values applied to them. (inherently hardcoded int)
+            public Suit suit { get; set; }
+            public Rank rank { get; set; } 
+            
+            // creates a variable that = each individual suit or rank
             public Card(Suit s, Rank r)
             {
-                this.Suit = s;
-                this.Rank = r;
+                this.suit = s;
+                this.rank = r;
             }
+            
 
+            // Creates a string value for each Card.
+            public override string ToString()
+            {
+                return $"The {this.rank} of {this.suit}";
+            }
+            
+            // Creates a method for finding the Blackjack value of a card
+            // Based on its rank.
             public int GetCardValue()
             {
                 var rv = 0;
-                switch (this.Rank)
+                switch (this.rank)
                 {
                     case Rank.Ace:
                         rv = 11;
@@ -93,24 +122,25 @@ namespace PlayBlackjack
                         break;
                 }
                 return rv;
-            }
 
-            public override string ToString()
-            {
-                return $"The {this.Rank} of {this.Suit}";
             }
+        } // Card.toString
+                             // Card.GetCardValue
 
-        } /*  int GetCardValue() = rv
-                              *  converting Card values into strings. */
+
         static void Main(string[] args)
         {
-            // Deck and hands.
+            // Declaring variables, deck and hands. //
+
             var deck = new List<Card>();
             var playersHand = new List<Card>();
             var dealersHand = new List<Card>();
 
             // Make a fresh deck, stored in deck.
-            foreach (Rank r in Enum.GetValues(typeof(Rank)))
+            // For each rank r, attach each suit s
+            // add all the cards you made to the list deck
+
+            foreach (Rank r in Enum.GetValues(typeof(Rank)))       
             {
                 foreach (Suit s in Enum.GetValues(typeof(Suit)))
                 {
@@ -118,15 +148,22 @@ namespace PlayBlackjack
                 }
 
             }
-            // Randomize deck, stored in randomDeck
+            // Shuffling deck, stored in randomDeck //
+
             var randomDeck = deck.OrderBy(x => Guid.NewGuid()).ToList();
 
-            // Checking for accuracy.
+            // Need to print rules and put randomDeck[0, 1] into playersHand;
+            // [3, 4] into dealersHand.
 
-            Console.WriteLine(randomDeck);
+            Console.WriteLine("Lets play Blackjack!");
+
+            
+            // Debugging.
             randomDeck.ForEach(i => Console.Write("{0}\n", i));
             Console.ReadLine();
             Console.WriteLine($"{randomDeck.Count}");
+            Console.ReadLine();
+            Console.WriteLine(randomDeck[0].GetCardValue());
             Console.ReadLine();
         }
     }
