@@ -191,23 +191,60 @@ namespace PlayBlackjack
             // Create a control flow.
             playersHand.ForEach(i => Console.Write("{0}\n", i));
             Console.WriteLine("Will you [H]it or [S]tay?");
-            while (playersTotal < 21)
+            while (playersTotal < 22)
             {
-                if (Console.ReadKey().Key == ConsoleKey.H)
+                char input = Console.ReadKey().KeyChar;
+                if (playersTotal < 21)
                 {
-                    Card.Hit(randomDeck, playersHand);
-                    int cv = playersHand[0].GetCardValue();
-                    playersTotal = playersTotal + cv;
-                    Console.WriteLine($"{playersTotal}");
+                    if (Console.ReadKey().Key == ConsoleKey.H && playersTotal < 21)
+                    {
+                        Card.Hit(randomDeck, playersHand);
+                        int cv = playersHand[0].GetCardValue();        /* players turn */
+                        playersTotal = playersTotal + cv;
+                        Console.WriteLine($"{playersTotal}");
+                        Console.WriteLine("Will you [H]it or [S]tay?");
+                    }
+                    else if (Console.ReadKey().Key == ConsoleKey.S)
+                    {
+                        Console.WriteLine("Alright, then its the dealer's turn");
+                        break;
+                    }
                 }
-                else if (Console.ReadKey().Key == ConsoleKey.S)
+                else if (playersTotal == 21)
                 {
+                    Console.WriteLine("You win!");
+                    break;
+                }
+                else if (playersTotal == 22)
+                {
+                    Console.WriteLine("You broke, dumbie.");
+                    Console.ReadLine();
                     break;
                 }
                 else
                 {
-
+                    Console.WriteLine("we're at else.");
+                    Console.ReadLine();
                 }
+                if (dealersTotal < 15)
+                {
+                    Card.Hit(randomDeck, dealersHand);             /* dealers turn */
+                    int dv = dealersHand[0].GetCardValue();
+                    dealersTotal = dealersTotal + dv;
+                    Console.WriteLine($"{dealersTotal}");
+                    Console.WriteLine("Dealer will hit again");
+                }
+                else if (dealersTotal > 22)
+                {
+                    Console.WriteLine("The dealer busted!");
+                }
+                else if (dealersTotal >= 15 && dealersTotal < playersTotal)
+                {
+                    Console.WriteLine($"The dealer got {dealersTotal} and you got {playersTotal}. You win!");
+                    break;
+                }
+                Console.WriteLine("Your code is broken");
+                break;
             }
             Console.Clear();
 
