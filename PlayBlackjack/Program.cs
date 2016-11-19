@@ -109,163 +109,122 @@ namespace PlayBlackjack
             public static void Hit(List<Card> randomDeck, List<Card> Hand)
             {
                 Hand.Insert(0, randomDeck[0]);
-                Hand.ForEach(i => Console.Write("{0}\n", i));
+                Hand.ForEach(i => Console.Write("\n{0}\n", i));
                 randomDeck.RemoveAt(0);
             }
 
-            // Method for dealing. Currently unused
-            public static void Deal(List<Card> randomDeck, List<Card> Hand)
+            static void Main(string[] args)
             {
-                Hand.Insert(0, randomDeck[0]);
-                Hand.Insert(0, randomDeck[1]);
-                Hand.ForEach(i => Console.Write("{0}\n", i));
-                randomDeck.RemoveAt(0);
-                randomDeck.RemoveAt(1);
-            }
+                // Declaring variables for deck, hands, and hand values. //
+                var deck = new List<Card>();
+                var playersHand = new List<Card>();
+                var dealersHand = new List<Card>();
+                int playersTotal = 0;
+                int dealersTotal = 0;
+                bool stay = false;
 
-
-
-            /* public static void PrintTotal(List<Card> hand)
-               {
-                   hand[0].GetCardValue();
-                   Hand.ForEach(i => Hand[i].GetCardValue());
-               } Shelved for now */
-
-        }
-
-        static void Main(string[] args)
-        {
-            // Declaring variables, deck and hands. //
-            var deck = new List<Card>();
-            var playersHand = new List<Card>();
-            var dealersHand = new List<Card>();
-            int playersTotal = 0;
-            int dealersTotal = 0;
-
-            // Make a fresh deck, stored in deck.
-            // For each rank r, attach each suit s
-            // add all the cards you made to the list deck
-            foreach (Rank r in Enum.GetValues(typeof(Rank)))
-            {
-                foreach (Suit s in Enum.GetValues(typeof(Suit)))
+                // Make a fresh deck.
+                foreach (Rank r in Enum.GetValues(typeof(Rank)))
                 {
-                    deck.Add(new Card(s, r));
+                    foreach (Suit s in Enum.GetValues(typeof(Suit)))
+                    {
+                        deck.Add(new Card(s, r));
+                    }
+
                 }
+                // Shuffling deck.
+                var randomDeck = deck.OrderBy(x => Guid.NewGuid()).ToList();
 
-            }
-            // Shuffling deck, stored in randomDeck //
-            var randomDeck = deck.OrderBy(x => Guid.NewGuid()).ToList();
-
-            // Game start.
-            Console.WriteLine("We're gonna play Blackjack. Get as close to 21 points as you can, but don't go over!");
-            Console.WriteLine("I'm going to deal you two cards now.");
-            {   // deal for player.
-                playersHand.Insert(0, randomDeck[0]);
-                int cv0 = playersHand[0].GetCardValue();
-                playersHand.Insert(0, randomDeck[1]);
-                int cv1 = playersHand[0].GetCardValue() + cv0;
-                playersTotal = playersTotal + cv1;
+                // Game start.
+                Console.WriteLine("We're gonna play Blackjack. Get as close to 21 points as you can, but don't go over!");
+                Console.WriteLine("I'm going to deal you two cards now.");
+                {   // Deal to player.
+                    playersHand.Insert(0, randomDeck[0]);
+                    playersHand.Insert(0, randomDeck[1]);
+                    int cv = playersHand[0].GetCardValue() + playersHand[1].GetCardValue();
+                    playersTotal = playersTotal + cv;
+                    randomDeck.RemoveAt(0);
+                    randomDeck.RemoveAt(0);
+                    playersHand.ForEach(i => Console.Write("{0}\n", i));
+                    Console.WriteLine(playersTotal);
+                }
+                Console.ReadLine();
+                Console.WriteLine("The dealer gets two cards as well, but he's only going to show you one of them.");
+                {   // Deal to dealer.
+                    dealersHand.Insert(0, randomDeck[0]);
+                    dealersHand.ForEach(i => Console.Write("{0}\n", i));
+                    dealersHand.Insert(0, randomDeck[1]);
+                    int dv = dealersHand[0].GetCardValue() + dealersHand[1].GetCardValue();
+                    dealersTotal = dealersTotal + dv;
+                    randomDeck.RemoveAt(1);
+                    randomDeck.RemoveAt(0);
+                }
+                Console.ReadLine();
+                Console.WriteLine("Remember! Aces are always worth 11.");
+                Console.WriteLine("Press H to hit or S to stay! Lets play Blackjack!");
+                // ^^^^ consolidate this shit. //
 
                 playersHand.ForEach(i => Console.Write("{0}\n", i));
-                Console.WriteLine(playersTotal);
-                randomDeck.RemoveAt(0);
-                randomDeck.RemoveAt(1);
-            }
-            Console.ReadLine();
-            Console.WriteLine("The dealer gets two cards as well, but he's only going to show you one of them.");
-            {   // deal for dealer.
-                dealersHand.Add(randomDeck[0]);
-                dealersHand.ForEach(i => Console.Write("{0}\n", i));
-                int cv = dealersHand[0].GetCardValue();
-                dealersHand.Add(randomDeck[1]);
-                randomDeck.RemoveAt(0);
-                randomDeck.RemoveAt(1);
-            }
-            Console.ReadLine();
-            Console.WriteLine("Remember! Aces are always worth 11.");
-            Console.WriteLine("Lets play Blackjack!");
-            Console.ReadLine();
 
-            // ^^^^ consolidate this shit. //
-
-            // Create a control flow.
-            playersHand.ForEach(i => Console.Write("{0}\n", i));
-            Console.WriteLine("Will you [H]it or [S]tay?");
-            while (playersTotal < 22)
-            {
-                char input = Console.ReadKey().KeyChar;
-                if (playersTotal < 21)
+                
+                // Players turn to hit and stay.
+                do
                 {
-                    if (Console.ReadKey().Key == ConsoleKey.H && playersTotal < 21)
+                    if (playersTotal < 21 && Console.ReadKey().Key == ConsoleKey.S)
                     {
-                        Card.Hit(randomDeck, playersHand);
-                        int cv = playersHand[0].GetCardValue();        /* players turn */
-                        playersTotal = playersTotal + cv;
-                        Console.WriteLine($"{playersTotal}");
-                        Console.WriteLine("Will you [H]it or [S]tay?");
-                    }
-                    else if (Console.ReadKey().Key == ConsoleKey.S)
-                    {
-                        Console.WriteLine("Alright, then its the dealer's turn");
+                        Console.WriteLine("\nAlright, then its the dealer's turn.");
+                        Console.ReadLine();
+                        stay = true;
                         break;
                     }
+                    else if (playersTotal < 21 && Console.ReadKey().Key == ConsoleKey.H)
+                    {
+                        Card.Hit(randomDeck, playersHand);
+                        int cv = playersHand[0].GetCardValue();
+                        playersTotal = playersTotal + cv;
+                        Console.WriteLine($"\nYour hand is worth {playersTotal}.");
+                        ;
+                    }
+                    
+                } while (playersTotal < 21 && stay == false);
+
+                // Players gets 21 or busts.
+                if (playersTotal > 21)
+                {
+                    Console.WriteLine("You lose!");
+                    Console.ReadLine();
+
                 }
                 else if (playersTotal == 21)
                 {
                     Console.WriteLine("You win!");
-                    break;
-                }
-                else if (playersTotal == 22)
-                {
-                    Console.WriteLine("You broke, dumbie.");
-                    Console.ReadLine();
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("we're at else.");
                     Console.ReadLine();
                 }
-                if (dealersTotal < 15)
+
+                // Dealers turn to hit until his hand is worth 15 points.
+                while (dealersTotal < 15 && playersTotal < 21)
                 {
-                    Card.Hit(randomDeck, dealersHand);             /* dealers turn */
+                    Card.Hit(randomDeck, dealersHand);
                     int dv = dealersHand[0].GetCardValue();
                     dealersTotal = dealersTotal + dv;
-                    Console.WriteLine($"{dealersTotal}");
-                    Console.WriteLine("Dealer will hit again");
+                    Console.WriteLine($"The dealers hand is worth {dealersTotal}.");
+                    Console.ReadLine();
                 }
-                else if (dealersTotal > 22)
+                if (dealersTotal < playersTotal && playersTotal < 21)
                 {
-                    Console.WriteLine("The dealer busted!");
+                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}.");
+                    Console.WriteLine("You win!");
+                    Console.ReadLine();
                 }
-                else if (dealersTotal >= 15 && dealersTotal < playersTotal)
+                if (dealersTotal > playersTotal && playersTotal < 21)
                 {
-                    Console.WriteLine($"The dealer got {dealersTotal} and you got {playersTotal}. You win!");
-                    break;
+                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}.");
+                    Console.WriteLine("You lose!");
+                    Console.ReadLine();
                 }
-                Console.WriteLine("Your code is broken");
-                break;
+
             }
-            Console.Clear();
-
-
-
-
-
-            //Card.Hit(randomDeck, dealersHand);
-            //Card.Hit(randomDeck, dealersHand);
-
-            //Debugging.
-            //randomDeck.ForEach(i => Console.Write("{0}\n", i));
-            //Console.WriteLine($"{randomDeck.Count}");
-            //Console.ReadLine();
-            //Console.WriteLine(randomDeck[0].GetCardValue());
-            //Console.ReadLine();
-            //randomDeck.RemoveAt(0);
-            //randomDeck.ForEach(i => Console.Write("{0}\n", i));
-            //Console.ReadLine();
-            //Console.WriteLine($"{randomDeck.Count}");
-            Console.ReadLine();
         }
     }
 }
+
