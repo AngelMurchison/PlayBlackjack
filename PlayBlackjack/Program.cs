@@ -136,8 +136,7 @@ namespace PlayBlackjack
                 var randomDeck = deck.OrderBy(x => Guid.NewGuid()).ToList();
 
                 // Game start.
-                Console.WriteLine("We're gonna play Blackjack. Get as close to 21 points as you can, but don't go over!");
-                Console.WriteLine("I'm going to deal you two cards now.");
+                Console.WriteLine("We're gonna play Blackjack. Get as close to 21 points as you can, but don't go over! \nI'm going to deal you two cards now.");
                 {   // Deal to player.
                     playersHand.Insert(0, randomDeck[0]);
                     playersHand.Insert(0, randomDeck[1]);
@@ -160,15 +159,14 @@ namespace PlayBlackjack
                     randomDeck.RemoveAt(0);
                 }
                 Console.ReadLine();
-                Console.WriteLine("Remember! Aces are always worth 11.");
-                Console.WriteLine("Press H to hit or S to stay! Lets play Blackjack!");
+                Console.WriteLine("Remember! Aces are always worth 11. \nPress H to hit or S to stay! Lets play Blackjack!");
                 // ^^^^ consolidate this shit. //
 
                 playersHand.ForEach(i => Console.Write("{0}\n", i));
 
-                
+
                 // Players turn to hit and stay.
-                do
+                while (playersTotal < 21)
                 {
                     if (playersTotal < 21 && Console.ReadKey().Key == ConsoleKey.S)
                     {
@@ -186,7 +184,7 @@ namespace PlayBlackjack
                         ;
                     }
                     
-                } while (playersTotal < 21 && stay == false);
+                }
 
                 // Players gets 21 or busts.
                 if (playersTotal > 21)
@@ -210,16 +208,19 @@ namespace PlayBlackjack
                     Console.WriteLine($"The dealers hand is worth {dealersTotal}.");
                     Console.ReadLine();
                 }
-                if (dealersTotal < playersTotal && playersTotal < 21)
+                if (dealersTotal > 21 && playersTotal < 21)
                 {
-                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}.");
-                    Console.WriteLine("You win!");
+                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}. \nYou win!");
                     Console.ReadLine();
                 }
-                if (dealersTotal > playersTotal && playersTotal < 21)
+                if (dealersTotal < playersTotal && playersTotal < 21)
                 {
-                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}.");
-                    Console.WriteLine("You lose!");
+                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}. \nYou win!");
+                    Console.ReadLine();
+                }
+                if ((dealersTotal > playersTotal && dealersTotal < 21) && playersTotal < 21)
+                {
+                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}.\n You lose!");
                     Console.ReadLine();
                 }
 
