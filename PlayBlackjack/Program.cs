@@ -36,7 +36,7 @@ namespace PlayBlackjack
 
         public class Card
         {
-            // allows for suit and rank to have values applied to them. (inherently hardcoded int)
+            // allows for suit and rank to have values applied to them and be named. (inherently hardcoded int)
             public Suit suit { get; set; }
             public Rank rank { get; set; }
 
@@ -121,7 +121,7 @@ namespace PlayBlackjack
                 var dealersHand = new List<Card>();
                 int playersTotal = 0;
                 int dealersTotal = 0;
-                bool stay = false;
+                
 
                 // Make a fresh deck.
                 foreach (Rank r in Enum.GetValues(typeof(Rank)))
@@ -136,33 +136,30 @@ namespace PlayBlackjack
                 var randomDeck = deck.OrderBy(x => Guid.NewGuid()).ToList();
 
                 // Game start.
-                Console.WriteLine("We're gonna play Blackjack. Get as close to 21 points as you can, but don't go over! \nI'm going to deal you two cards now.");
+                Console.WriteLine("Hi, welcome to Club Visual. We are proud to be your choice for card games and gambling of all kinds.\n\nWe're playing Blackjack at this table, Aces are worth 11, and I'll be your dealer.\nWin by either getting 21 points, or having more points than me at the end of the game. \nI'm going to deal you two cards now.");
+
                 {   // Deal to player.
                     playersHand.Insert(0, randomDeck[0]);
                     playersHand.Insert(0, randomDeck[1]);
                     int cv = playersHand[0].GetCardValue() + playersHand[1].GetCardValue();
                     playersTotal = playersTotal + cv;
-                    randomDeck.RemoveAt(0);
-                    randomDeck.RemoveAt(0);
-                    playersHand.ForEach(i => Console.Write("{0}\n", i));
-                    Console.WriteLine(playersTotal);
+                    playersHand.ForEach(i => Console.Write("\n{0}", i));
+                    Console.WriteLine($"\nYour hand is worth {playersTotal} points.");
+                    Console.ReadLine();
                 }
-                Console.ReadLine();
-                Console.WriteLine("The dealer gets two cards as well, but he's only going to show you one of them.");
+                Console.WriteLine("I get two cards as well, and I'll even show you one of them.");
                 {   // Deal to dealer.
-                    dealersHand.Insert(0, randomDeck[0]);
-                    dealersHand.ForEach(i => Console.Write("{0}\n", i));
-                    dealersHand.Insert(0, randomDeck[1]);
+                    dealersHand.Insert(0, randomDeck[2]);
+                    dealersHand.Insert(0, randomDeck[3]);
                     int dv = dealersHand[0].GetCardValue() + dealersHand[1].GetCardValue();
                     dealersTotal = dealersTotal + dv;
-                    randomDeck.RemoveAt(1);
-                    randomDeck.RemoveAt(0);
+                    Console.Write("\n{0}. It is worth {1} points. Press enter when you're ready to play.", dealersHand[0], dealersHand[0].GetCardValue());
+                    Console.ReadLine();
                 }
-                Console.ReadLine();
-                Console.WriteLine("Remember! Aces are always worth 11. \nPress H to hit or S to stay! Lets play Blackjack!");
-                // ^^^^ consolidate this shit. //
+                randomDeck.RemoveRange(0, 4);
+                Console.WriteLine("\n\nPress H to hit or S to stay! Lets play Blackjack!");
 
-                playersHand.ForEach(i => Console.Write("{0}\n", i));
+                playersHand.ForEach(i => Console.Write("\n{0}\n", i));
 
 
                 // Players turn to hit and stay.
@@ -170,18 +167,17 @@ namespace PlayBlackjack
                 {
                     if (playersTotal < 21 && Console.ReadKey().Key == ConsoleKey.S)
                     {
-                        Console.WriteLine("\nAlright, then its the dealer's turn.");
+                        Console.WriteLine("\nAlright, then its the my turn. ");
                         Console.ReadLine();
-                        stay = true;
                         break;
                     }
                     else if (playersTotal < 21 && Console.ReadKey().Key == ConsoleKey.H)
                     {
+                        Console.WriteLine("You're sure you want to hit? Press H again to confirm!");
                         Card.Hit(randomDeck, playersHand);
                         int cv = playersHand[0].GetCardValue();
                         playersTotal = playersTotal + cv;
-                        Console.WriteLine($"\nYour hand is worth {playersTotal}.");
-                        ;
+                        Console.WriteLine($"\nYour hand is worth {playersTotal} points.");
                     }
                     
                 }
@@ -195,7 +191,7 @@ namespace PlayBlackjack
                 }
                 else if (playersTotal == 21)
                 {
-                    Console.WriteLine("You win!");
+                    Console.WriteLine($"You win!");
                     Console.ReadLine();
                 }
 
@@ -205,22 +201,22 @@ namespace PlayBlackjack
                     Card.Hit(randomDeck, dealersHand);
                     int dv = dealersHand[0].GetCardValue();
                     dealersTotal = dealersTotal + dv;
-                    Console.WriteLine($"The dealers hand is worth {dealersTotal}.");
+                    Console.WriteLine($"My hand is worth {dealersTotal} points.");
                     Console.ReadLine();
                 }
                 if (dealersTotal > 21 && playersTotal < 21)
                 {
-                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}. \nYou win!");
+                    Console.WriteLine($"My hand is worth {dealersTotal} points and yours is worth {playersTotal} points!\n \nYou win!");
                     Console.ReadLine();
                 }
                 if (dealersTotal < playersTotal && playersTotal < 21)
                 {
-                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}. \nYou win!");
+                    Console.WriteLine($"My hand is worth {dealersTotal} points and yours is worth {playersTotal} points.\n \nYou win!");
                     Console.ReadLine();
                 }
                 if ((dealersTotal > playersTotal && dealersTotal < 21) && playersTotal < 21)
                 {
-                    Console.WriteLine($"The dealers hand is worth {dealersTotal} and yours is worth {playersTotal}.\n You lose!");
+                    Console.WriteLine($"My hand is worth {dealersTotal} points and yours is worth {playersTotal} points.\n \n You lose! Better luck next time.");
                     Console.ReadLine();
                 }
 
