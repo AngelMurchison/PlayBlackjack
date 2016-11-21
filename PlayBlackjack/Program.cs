@@ -122,7 +122,6 @@ namespace PlayBlackjack
                 int playersTotal = 0;
                 int dealersTotal = 0;
                 
-
                 // Make a fresh deck.
                 foreach (Rank r in Enum.GetValues(typeof(Rank)))
                 {
@@ -137,7 +136,6 @@ namespace PlayBlackjack
 
                 // Game start.
                 Console.WriteLine("Hi, welcome to Club Visual. We are proud to be your choice for card games and gambling of all kinds.\n\nWe're playing Blackjack at this table, Aces are worth 11, and I'll be your dealer.\nWin by either getting 21 points, or having more points than me at the end of the game. \nI'm going to deal you two cards now.");
-
                 {   // Deal to player.
                     playersHand.Insert(0, randomDeck[0]);
                     playersHand.Insert(0, randomDeck[1]);
@@ -161,10 +159,9 @@ namespace PlayBlackjack
 
                 playersHand.ForEach(i => Console.Write("\n{0}\n", i));
 
-
                 // Players turn to hit and stay.
                 while (playersTotal < 21)
-                {
+                {                            // v its waiting here v
                     if (playersTotal < 21 && Console.ReadKey().Key == ConsoleKey.S)
                     {
                         Console.WriteLine("\nAlright, then its the my turn. ");
@@ -173,7 +170,6 @@ namespace PlayBlackjack
                     }
                     else if (playersTotal < 21 && Console.ReadKey().Key == ConsoleKey.H)
                     {
-                        Console.WriteLine("You're sure you want to hit? Press H again to confirm!");
                         Card.Hit(randomDeck, playersHand);
                         int cv = playersHand[0].GetCardValue();
                         playersTotal = playersTotal + cv;
@@ -219,7 +215,6 @@ namespace PlayBlackjack
                     Console.WriteLine($"My hand is worth {dealersTotal} points and yours is worth {playersTotal} points.\n \n You lose! Better luck next time.");
                     Console.ReadLine();
                 }
-
             }
         }
     }
